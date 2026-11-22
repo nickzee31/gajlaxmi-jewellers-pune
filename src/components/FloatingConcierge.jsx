@@ -8,7 +8,7 @@ export default function FloatingConcierge() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto">
+    <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 pointer-events-auto">
       {/* Tooltip badge */}
       <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#ffffff] border border-[#e5e7eb] text-caption text-[#516171] shadow-xs">
         <Sparkles className="w-3.5 h-3.5 text-[#f1675d]" />
