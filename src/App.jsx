@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import MotionHero from './components/MotionHero';
 import LiveBullionTicker from './components/LiveBullionTicker';
@@ -6,7 +6,7 @@ import MaharashtrianHeritageFeature from './components/MaharashtrianHeritageFeat
 import GoldRateCalculator from './components/GoldRateCalculator';
 import CollectionShowcase from './components/CollectionShowcase';
 import VirtualLookbook from './components/VirtualLookbook';
-import FlagshipExperience from './components/FlagshipExperience';
+import VisitPage from './components/VisitPage';
 import TrustBadges from './components/TrustBadges';
 import CustomerStories from './components/CustomerStories';
 import Footer from './components/Footer';
@@ -16,17 +16,37 @@ import WishlistDrawer from './components/WishlistDrawer';
 import SearchModal from './components/SearchModal';
 import FloatingConcierge from './components/FloatingConcierge';
 import { PRODUCTS_CATALOG } from './data/jewelryData';
+import { ArrowRight, Sparkles, Gem, CalendarCheck } from 'lucide-react';
 
 export default function App() {
+  const [activePage, setActivePage] = useState('home');
   const [wishlist, setWishlist] = useState([
-    PRODUCTS_CATALOG[0], // Pre-loaded with Maharani Peshwai Choker as a luxury teaser
+    PRODUCTS_CATALOG[0], // Pre-loaded with Maharani Peshwai Choker
   ]);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Wishlist handler
+  // Sync with URL hash if present
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#/', '').replace('#', '');
+      if (['home', 'collections', 'heritage', 'calculator', 'visit'].includes(hash)) {
+        setActivePage(hash);
+      }
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
+
+  const handleNavigate = (pageId) => {
+    setActivePage(pageId);
+    window.location.hash = `#/${pageId}`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleToggleWishlist = (product) => {
     setWishlist((prev) => {
       const exists = prev.some((p) => p.id === product.id);
@@ -42,7 +62,6 @@ export default function App() {
     setWishlist((prev) => prev.filter((p) => p.id !== id));
   };
 
-  // Quick view handler
   const handleOpenQuickView = (productOrId) => {
     if (typeof productOrId === 'string') {
       const found = PRODUCTS_CATALOG.find((p) => p.id === productOrId) || PRODUCTS_CATALOG[0];
@@ -52,81 +71,180 @@ export default function App() {
     }
   };
 
-  const handleScrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-[#fee7e1] text-[#516171] flex flex-col font-sans selection:bg-[#f1675d]/20 selection:text-[#d11b4d]">
+    <div className="min-h-screen bg-[#fee7e1] text-[#516171] flex flex-col font-sans selection:bg-[#f1675d]/20 selection:text-[#d11b4d] pb-16 lg:pb-0">
       
-      {/* Top Navbar */}
+      {/* Top Navbar with Multi-Page Tabs & Mobile-Ready VIP Button */}
       <Navbar
+        activePage={activePage}
+        onNavigate={handleNavigate}
         wishlistCount={wishlist.length}
         onOpenWishlist={() => setIsWishlistOpen(true)}
-        onOpenBooking={() => setIsBookingOpen(true)}
-        onOpenCalculator={() => handleScrollToSection('calculator')}
+        onOpenBooking={() => handleNavigate('visit')}
         onOpenSearch={() => setIsSearchOpen(true)}
       />
 
-      {/* Motion / Animated Hero Component */}
+      {/* Main Page Router */}
       <main className="flex-1">
-        <MotionHero
-          onOpenBooking={() => setIsBookingOpen(true)}
-          onOpenQuickView={handleOpenQuickView}
-          onExploreCollection={() => handleScrollToSection('collections')}
-        />
+        
+        {/* ================= PAGE 1: HOME ================= */}
+        {activePage === 'home' && (
+          <div className="space-y-12 sm:space-y-16">
+            {/* Grand Motion Hero */}
+            <MotionHero
+              onOpenBooking={() => handleNavigate('visit')}
+              onOpenQuickView={handleOpenQuickView}
+              onExploreCollection={() => handleNavigate('collections')}
+            />
 
-        {/* Live Pune Bullion Rate Ticker */}
-        <LiveBullionTicker
-          onOpenCalculator={() => handleScrollToSection('calculator')}
-          onOpenRateLock={() => setIsBookingOpen(true)}
-        />
+            {/* Pune Live Bullion Ticker */}
+            <LiveBullionTicker
+              onOpenCalculator={() => handleNavigate('calculator')}
+              onOpenRateLock={() => handleNavigate('visit')}
+            />
 
-        {/* Traditional Maharashtrian Heritage Feature */}
-        <MaharashtrianHeritageFeature
-          onSelectHeirloom={(item) => handleOpenQuickView(item)}
-          onAddToWishlist={handleToggleWishlist}
-          onOpenBooking={() => setIsBookingOpen(true)}
-        />
+            {/* Curated Highlights Teaser (Uncluttered, 3 pieces) */}
+            <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 text-left">
+                <div>
+                  <div className="inline-flex">
+                    <span className="ui-chip bg-[#ffffff] border border-[#f1675d]/30 text-[#f1675d] text-label-sm font-medium">
+                      <Gem className="w-3.5 h-3.5 mr-1" />
+                      Featured Highlights
+                    </span>
+                  </div>
+                  <h2 className="text-headline-lg font-medium text-[#516171] mt-2">
+                    Handcrafted Showroom Icons
+                  </h2>
+                </div>
 
-        {/* Interactive Curated Collections Catalog */}
-        <CollectionShowcase
-          onOpenQuickView={handleOpenQuickView}
-          onToggleWishlist={handleToggleWishlist}
-          wishlist={wishlist}
-          onOpenBooking={() => setIsBookingOpen(true)}
-        />
+                <button
+                  onClick={() => handleNavigate('collections')}
+                  className="btn-secondary"
+                >
+                  <span>View All 3,500+ Designs</span>
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </button>
+              </div>
 
-        {/* Interactive Virtual Lookbook & Trousseau Styling */}
-        <VirtualLookbook
-          onOpenBooking={() => setIsBookingOpen(true)}
-          onOpenQuickView={handleOpenQuickView}
-        />
+              {/* 3 Featured Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {PRODUCTS_CATALOG.slice(0, 3).map((item) => (
+                  <div
+                    key={item.id}
+                    onClick={() => handleOpenQuickView(item)}
+                    className="p-4 rounded-[8px] bg-[#ffffff] border border-[#e5e7eb] hover:border-[#f1675d] transition-colors cursor-pointer text-left space-y-3 group"
+                  >
+                    <div className="aspect-[4/3] rounded-[6px] overflow-hidden bg-[#fee7e1]">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        onError={(e) => { e.currentTarget.src = './images/hero-bridal.jpg'; }}
+                        className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500"
+                      />
+                    </div>
+                    <div>
+                      <span className="text-caption text-[#f1675d] font-medium block">{item.collection}</span>
+                      <h4 className="text-title-md font-medium text-[#516171] group-hover:text-[#f1675d] transition-colors truncate">
+                        {item.name}
+                      </h4>
+                      <p className="text-caption text-[#516171]/80 mt-0.5">{item.purity} • {item.grossWeight}</p>
+                      <div className="text-title-md font-medium text-[#d11b4d] mt-2">
+                        ₹{item.priceEstimate.toLocaleString('en-IN')}*
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-        {/* Karatmeter Pricing & Making Charge Transparency Calculator */}
-        <GoldRateCalculator
-          onOpenBooking={() => setIsBookingOpen(true)}
-        />
+            {/* The 5 Gajlaxmi Guarantees */}
+            <TrustBadges />
 
-        {/* The 5,500 Sq. Ft. Flagship Showroom Experience */}
-        <FlagshipExperience
-          onOpenBooking={() => setIsBookingOpen(true)}
-        />
+            {/* Flagship Showroom Banner */}
+            <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-8">
+              <div className="p-6 sm:p-10 rounded-[8px] bg-[#ffffff] border-2 border-[#f7c85f] flex flex-col md:flex-row items-center justify-between gap-6 text-left">
+                <div className="space-y-2">
+                  <span className="ui-chip bg-[#fee7e1] text-[#f1675d] text-label-sm font-medium">
+                    Chandan Nagar, Pune
+                  </span>
+                  <h3 className="text-headline-sm sm:text-headline-md font-medium text-[#516171]">
+                    Experience Our 5,500 Sq. Ft. Jewellery Flagship
+                  </h3>
+                  <p className="text-body-md text-[#516171] max-w-xl">
+                    Private bridal consultation suites, high-carat solitaire lounge, and live computerized Karatmeter testing before your eyes.
+                  </p>
+                </div>
 
-        {/* The 5 Gajlaxmi Guarantees */}
-        <TrustBadges />
+                <button
+                  onClick={() => handleNavigate('visit')}
+                  className="btn-primary whitespace-nowrap h-[44px]"
+                >
+                  <CalendarCheck className="w-4 h-4 mr-2 text-[#f7c85f]" />
+                  <span>Book VIP Visit & Tour</span>
+                </button>
+              </div>
+            </section>
+          </div>
+        )}
 
-        {/* Customer Stories from Pune */}
-        <CustomerStories />
+        {/* ================= PAGE 2: COLLECTIONS ================= */}
+        {activePage === 'collections' && (
+          <div className="py-8 sm:py-12 space-y-8">
+            <CollectionShowcase
+              onOpenQuickView={handleOpenQuickView}
+              onToggleWishlist={handleToggleWishlist}
+              wishlist={wishlist}
+              onOpenBooking={() => handleNavigate('visit')}
+            />
+          </div>
+        )}
+
+        {/* ================= PAGE 3: BRIDAL HERITAGE ================= */}
+        {activePage === 'heritage' && (
+          <div className="py-8 sm:py-12 space-y-12">
+            <MaharashtrianHeritageFeature
+              onSelectHeirloom={(item) => handleOpenQuickView(item)}
+              onAddToWishlist={handleToggleWishlist}
+              onOpenBooking={() => handleNavigate('visit')}
+            />
+
+            <VirtualLookbook
+              onOpenBooking={() => handleNavigate('visit')}
+            />
+          </div>
+        )}
+
+        {/* ================= PAGE 4: GOLD RATES & CALCULATOR ================= */}
+        {activePage === 'calculator' && (
+          <div className="py-8 sm:py-12 space-y-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <LiveBullionTicker
+                onOpenCalculator={() => {}}
+                onOpenRateLock={() => handleNavigate('visit')}
+              />
+            </div>
+
+            <GoldRateCalculator
+              onOpenBooking={() => handleNavigate('visit')}
+            />
+          </div>
+        )}
+
+        {/* ================= PAGE 5: FLAGSHIP & BOOK VIP VISIT ================= */}
+        {activePage === 'visit' && (
+          <div className="py-4 space-y-10">
+            <VisitPage />
+            <CustomerStories />
+          </div>
+        )}
+
       </main>
 
       {/* Royal Footer */}
       <Footer
-        onOpenBooking={() => setIsBookingOpen(true)}
-        onOpenCalculator={() => handleScrollToSection('calculator')}
+        onOpenBooking={() => handleNavigate('visit')}
+        onOpenCalculator={() => handleNavigate('calculator')}
       />
 
       {/* Floating Concierge WhatsApp Action */}
@@ -145,7 +263,7 @@ export default function App() {
         isWishlisted={selectedProduct ? wishlist.some(p => p.id === selectedProduct.id) : false}
         onOpenBooking={() => {
           setSelectedProduct(null);
-          setIsBookingOpen(true);
+          handleNavigate('visit');
         }}
       />
 
@@ -156,7 +274,7 @@ export default function App() {
         onRemoveItem={handleRemoveWishlistItem}
         onOpenBooking={() => {
           setIsWishlistOpen(false);
-          setIsBookingOpen(true);
+          handleNavigate('visit');
         }}
         onOpenQuickView={(item) => {
           setIsWishlistOpen(false);

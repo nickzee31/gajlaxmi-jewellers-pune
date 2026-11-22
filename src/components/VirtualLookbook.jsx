@@ -1,70 +1,23 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
   CheckCircle, 
-  Layers
+  Layers,
+  Sparkles
 } from 'lucide-react';
+import { LOOKBOOK_LOOKS } from '../data/jewelryData';
 
 export default function VirtualLookbook({ onOpenBooking }) {
   const [activeLook, setActiveLook] = useState('peshwai');
 
-  const looks = [
-    {
-      id: 'peshwai',
-      title: 'The Shrimant Peshwai Bride',
-      attire: 'Traditional Nauvari Paithani Silk Saree',
-      curatedNeckline: 'Deep Sweetheart / Traditional Boat Neck',
-      image: 'https://images.unsplash.com/photo-1543290954-bc649dcab857?auto=format&fit=crop&w=1000&q=80',
-      description: 'The definitive royal Pune bridal aesthetic: layering the iconic Kolhapuri Saaj with a snug Peshwai Thushi, crowned by the Puneri Chandrakor Nath and Gahu Tode.',
-      ornaments: [
-        { name: 'Kolhapuri Saaj (21 Charms)', spec: '22K Gold • 65g' },
-        { name: 'Peshwai Royal Thushi Choker', spec: '22K Gold & Potta Ruby • 34g' },
-        { name: 'Puneri Chandrakor Pearl Nath', spec: 'Basra Pearl & Ruby • 6.2g' },
-        { name: 'Pichodi & Gahu Tode Kadas', spec: '22K Solid Gold • 54g' },
-      ],
-      palette: 'Royal Emerald Green & Burnished Antique Gold',
-    },
-    {
-      id: 'rajwadi',
-      title: 'The Imperial Rajwadi Sangeet',
-      attire: 'Crimson Velvet Bridal Zardozi Lehenga',
-      curatedNeckline: 'Broad Scoop / Royal Maharani Neckline',
-      image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1000&q=80',
-      description: 'Grand uncut Polki diamonds and Zambian emerald droplets set in antique 22K gold, catching the spotlight across royal wedding palace halls.',
-      ornaments: [
-        { name: 'Maharani Polki Choker with Emeralds', spec: '22K Jadau • 84g' },
-        { name: 'Chandbali Cascading Jhumkas', spec: 'Natural Pearls • 32g' },
-        { name: 'Haathphool Floral Hand Harness', spec: '18K Polki • 28g' },
-        { name: 'Maang Tikka & Mathapatti', spec: '22K Gold • 22g' },
-      ],
-      palette: 'Imperial Crimson Red & Uncut Diamond Radiance',
-    },
-    {
-      id: 'cocktail',
-      title: 'The Contemporary Solitaire Gala',
-      attire: 'Modern Metallic Champagne Cocktail Gown',
-      curatedNeckline: 'Off-Shoulder / V-Plunge Architectural Neckline',
-      image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1000&q=80',
-      description: 'Minimalist high-carat diamond luxury. Pure, scintillating GIA & IGI certified diamonds that illuminate modern evening celebrations.',
-      ornaments: [
-        { name: 'Cascading Ethereal Diamond Choker', spec: '18K White Gold • 12.5 Ct' },
-        { name: 'Classic Solitaire Engagement Ring', spec: '2.15 Ct IGI E-VVS1' },
-        { name: 'Fluid Diamond Tennis Bracelet', spec: '3.40 Ct Diamonds' },
-        { name: 'Solitaire Stud Drops', spec: '1.20 Ct Pair' },
-      ],
-      palette: 'Champagne Platinum & Liquid Light Scintillation',
-    },
-  ];
-
-  const currentLook = looks.find(l => l.id === activeLook) || looks[0];
+  const currentLook = LOOKBOOK_LOOKS.find(l => l.id === activeLook) || LOOKBOOK_LOOKS[0];
 
   return (
-    <section id="lookbook" className="py-16 sm:py-24 bg-[#fee7e1] border-t border-[#e5e7eb] relative">
+    <section id="lookbook" className="py-12 sm:py-16 bg-[#fee7e1] relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
-        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-14 space-y-3">
+        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
           <div className="inline-flex">
             <span className="ui-chip bg-[#ffffff] border border-[#f1675d]/30 text-[#f1675d] text-label-sm font-medium">
               <Layers className="w-3.5 h-3.5 mr-1" />
@@ -76,19 +29,19 @@ export default function VirtualLookbook({ onOpenBooking }) {
             Styling Your Wedding Trousseau
           </h2>
 
-          <p className="text-body-lg text-[#516171] leading-relaxed">
+          <p className="text-body-md text-[#516171] leading-relaxed">
             Explore how our heirloom bridal jewellery coordinates with traditional Paithani silks, royal lehengas, and contemporary reception ensembles.
           </p>
         </div>
 
         {/* Lookbook Switcher Tabs */}
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-8">
           <div className="inline-flex p-1 rounded-[6px] bg-[#ffffff] border border-[#e5e7eb] gap-1">
-            {looks.map((look) => (
+            {LOOKBOOK_LOOKS.map((look) => (
               <button
                 key={look.id}
                 onClick={() => setActiveLook(look.id)}
-                className={`px-4 sm:px-5 py-2 rounded-[4px] text-label-md font-medium transition-all cursor-pointer ${
+                className={`px-3 sm:px-5 py-2 rounded-[4px] text-label-md font-medium transition-all cursor-pointer ${
                   activeLook === look.id
                     ? 'bg-[#516171] text-[#fee7e1]'
                     : 'text-[#516171] hover:bg-[#fee7e1]/50'
@@ -112,10 +65,13 @@ export default function VirtualLookbook({ onOpenBooking }) {
                     key={currentLook.id}
                     src={currentLook.image}
                     alt={currentLook.title}
+                    onError={(e) => {
+                      e.currentTarget.src = './images/hero-bridal.jpg';
+                    }}
                     initial={{ opacity: 0, scale: 1.03 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.3 }}
                     className="w-full h-full object-cover object-center"
                   />
                 </AnimatePresence>
@@ -127,7 +83,7 @@ export default function VirtualLookbook({ onOpenBooking }) {
                   </span>
                 </div>
 
-                <div className="absolute bottom-3 inset-x-3 p-3 rounded-[6px] bg-[#ffffff]/95 border border-[#e5e7eb] text-body-sm text-[#516171]">
+                <div className="absolute bottom-3 inset-x-3 p-2.5 rounded-[6px] bg-[#ffffff]/95 border border-[#e5e7eb] text-body-sm text-[#516171]">
                   <span className="text-[#f1675d] font-medium block text-caption">Complementary Palette</span>
                   {currentLook.palette}
                 </div>
@@ -135,8 +91,8 @@ export default function VirtualLookbook({ onOpenBooking }) {
             </div>
 
             {/* Styling Notes & Stack Breakdown */}
-            <div className="lg:col-span-7 space-y-5 text-left">
-              <div className="space-y-1.5">
+            <div className="lg:col-span-7 space-y-4 text-left">
+              <div className="space-y-1">
                 <span className="text-label-sm text-[#f1675d] font-medium block">
                   Attire: {currentLook.attire}
                 </span>
@@ -180,8 +136,8 @@ export default function VirtualLookbook({ onOpenBooking }) {
                 </div>
               </div>
 
-              {/* Private Suite Booking */}
-              <div className="pt-2 flex flex-wrap items-center gap-4">
+              {/* Action */}
+              <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={onOpenBooking}
                   className="btn-primary"
@@ -191,7 +147,7 @@ export default function VirtualLookbook({ onOpenBooking }) {
 
                 <div className="text-body-sm text-[#516171] flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#f1675d]" />
-                  <span>Bring your wedding outfit to our Kharadi VIP suite for custom drape matching</span>
+                  <span>Bring your wedding outfit to our Kharadi VIP suite for drape matching</span>
                 </div>
               </div>
 

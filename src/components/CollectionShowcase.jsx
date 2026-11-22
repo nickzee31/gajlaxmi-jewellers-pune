@@ -115,6 +115,9 @@ export default function CollectionShowcase({
                   <img
                     src={product.image}
                     alt={product.name}
+                    onError={(e) => {
+                      e.currentTarget.src = './images/hero-bridal.jpg';
+                    }}
                     className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-500 ease-out"
                   />
 

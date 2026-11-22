@@ -268,6 +268,9 @@ export default function MotionHero({ onOpenBooking, onOpenQuickView, onExploreCo
                     <img
                       src={slide.image}
                       alt={slide.title}
+                      onError={(e) => {
+                        e.currentTarget.src = './images/hero-bridal.jpg';
+                      }}
                       className="w-full h-full object-cover object-center"
                     />
 

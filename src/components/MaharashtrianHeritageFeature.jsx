@@ -78,6 +78,9 @@ export default function MaharashtrianHeritageFeature({ onSelectHeirloom, onAddTo
                     key={activeItem.id}
                     src={activeItem.image}
                     alt={activeItem.name}
+                    onError={(e) => {
+                      e.currentTarget.src = './images/hero-bridal.jpg';
+                    }}
                     initial={{ opacity: 0, scale: 1.03 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
